@@ -1,7 +1,9 @@
 import { auth, db } from './firebase.js';
 import { collection, addDoc, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const targetUserSpan = document.getElementById('target-user');
+const senderStatus = document.getElementById('sender-status');
 const sendForm = document.getElementById('send-form');
 const messageText = document.getElementById('message-text');
 const statusMsg = document.getElementById('status-message');
@@ -11,12 +13,23 @@ const urlParams = new URLSearchParams(window.location.search);
 const usernameParam = urlParams.get('u');
 
 let recipientUid = null;
+let recipientName = "";
+let currentUser = null;
+
+onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    if (user) {
+        senderStatus.innerHTML = `Connecté en tant que <strong>${user.email}</strong>. Ton message reste anonyme pour le destinataire.`;
+    } else {
+        senderStatus.innerHTML = `Envoyer en visiteur anonyme ou <a href="register.html" class="link">créer un compte</a>.`;
+    }
+});
 
 async function loadRecipient() {
     if (!usernameParam) {
         targetUserSpan.innerText = "Utilisateur inconnu";
         btnSend.disabled = true;
-        statusMsg.innerText = "Lien invalide. Aucun destinataire specifie.";
+        statusMsg.innerText = "Lien invalide.";
         return;
     }
 
@@ -31,12 +44,13 @@ async function loadRecipient() {
         } else {
             querySnapshot.forEach((doc) => {
                 recipientUid = doc.id;
-                targetUserSpan.innerText = usernameParam;
+                const data = doc.data();
+                recipientName = data.fullname || data.username;
+                targetUserSpan.innerText = recipientName;
             });
         }
     } catch (err) {
         console.error("Erreur destinataire :", err);
-        statusMsg.innerText = "Erreur lors du chargement du profil.";
     }
 }
 
@@ -53,27 +67,26 @@ sendForm.addEventListener('submit', async (e) => {
     btnSend.innerText = "Envoi en cours...";
 
     try {
-        const senderUser = auth.currentUser;
-        
-        // Enregistrement des details complets dans Firestore
         await addDoc(collection(db, "messages"), {
             recipientUid: recipientUid,
+            recipientName: recipientName,
             recipientUsername: usernameParam.toLowerCase(),
             text: text,
+            read: false,
             createdAt: serverTimestamp(),
-            // Informations d'expedition visibles dans la console Firebase
-            senderUid: senderUser ? senderUser.uid : "ANONYMOUS_VISITOR",
-            senderEmail: senderUser ? senderUser.email : "NON_CONNECTE",
+            // Traçabilité administrateur / sécurité
+            senderUid: currentUser ? currentUser.uid : "ANONYME_VISITEUR",
+            senderEmail: currentUser ? currentUser.email : "NON_CONNECTE",
             userAgent: navigator.userAgent
         });
 
         statusMsg.style.color = "#4E9F3D";
-        statusMsg.innerText = "Message envoye avec succes !";
+        statusMsg.innerText = "Message envoyé avec succès !";
         messageText.value = "";
     } catch (err) {
         console.error("Erreur d'envoi :", err);
         statusMsg.style.color = "#FF1E1E";
-        statusMsg.innerText = "Echec de l'envoi du message.";
+        statusMsg.innerText = "Échec de l'envoi.";
     } finally {
         btnSend.disabled = false;
         btnSend.innerText = "Envoyer le message";
