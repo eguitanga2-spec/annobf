@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Envoyer un message - AnonBF</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="glass-container">
         <h1 class="logo">AnonBF</h1>
-        <p class="tagline">Envoyer un message anonyme a <span id="target-user">...</span></p>
+        <p class="tagline">Envoyer un message anonyme à <br><strong id="target-user" style="font-size: 1.2em; color: #fff;">...</strong></p>
+
+        <div id="sender-status" style="margin-bottom: 15px; font-size: 0.85em; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px;"></div>
 
         <form id="send-form" class="form">
             <div class="input-group">
-                <textarea id="message-text" placeholder="Ecris ton message anonyme ici..." required maxlength="500" rows="5"></textarea>
+                <textarea id="message-text" placeholder="Écris ton message anonyme ici..." required maxlength="500" rows="5"></textarea>
             </div>
 
             <div id="status-message" class="status-msg"></div>
@@ -21,17 +23,8 @@
             <button type="submit" class="btn btn-primary" id="btn-send">Envoyer le message</button>
         </form>
 
-        <div class="instructions-box" style="margin-top: 25px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; font-size: 0.85em; text-align: left; color: #eee;">
-            <strong style="display: block; margin-bottom: 5px;">Comment ca marche ?</strong>
-            <ul style="margin: 0; padding-left: 20px;">
-                <li>Ce message sera delivre anonymement au destinataire.</li>
-                <li>Le destinataire pourra generer une image de votre message pour y repondre en story ou sur ses reseaux.</li>
-                <li>Aucune inscription n'est requise pour envoyer un message.</li>
-            </ul>
-        </div>
-
-        <div class="footer-link" style="margin-top: 15px;">
-            <a href="register.html" class="link">Obtenir mon propre lien AnonBF</a>
+        <div class="footer-link" style="margin-top: 20px;">
+            <a href="register.html" class="link">Obtenir ton propre lien AnonBF</a>
         </div>
     </div>
 
