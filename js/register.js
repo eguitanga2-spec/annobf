@@ -1,5 +1,9 @@
 import { auth, db } from './firebase.js';
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { 
+    createUserWithEmailAndPassword, 
+    setPersistence, 
+    browserLocalPersistence 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const form = document.getElementById('register-form');
@@ -10,13 +14,14 @@ form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorMsg.innerText = '';
 
+    const fullname = document.getElementById('fullname').value.trim();
     const username = document.getElementById('username').value.trim().toLowerCase();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
 
     const usernameRegex = /^[a-zA-Z0-9_]+$/;
     if (!usernameRegex.test(username)) {
-        errorMsg.innerText = "Le nom d'utilisateur ne doit contenir que des lettres, chiffres et underscore (_).";
+        errorMsg.innerText = "Le pseudo ne doit contenir que des lettres, chiffres et underscore (_).";
         return;
     }
 
@@ -24,26 +29,29 @@ form.addEventListener('submit', async (e) => {
     btnSubmit.innerText = "Création en cours...";
 
     try {
-        // 1. Vérifier si le pseudo existe déjà
+        // Se souvenir de moi automatique (Obligatoire)
+        await setPersistence(auth, browserLocalPersistence);
+
+        // Vérification disponibilité du pseudo
         const userRef = doc(db, "usernames", username);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-            throw new Error("Ce nom d'utilisateur est déjà pris !");
+            throw new Error("Ce pseudo est déjà pris. Choisissez-en un autre.");
         }
 
-        // 2. Créer l'utilisateur dans Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // 3. Sauvegarder l'utilisateur
+        // Stockage des infos utilisateur (Nom, Prénom, Username)
         await setDoc(doc(db, "users", user.uid), {
+            fullname: fullname,
             username: username,
             email: email,
+            role: "user",
             createdAt: serverTimestamp()
         });
 
-        // 4. Réserver le nom d'utilisateur
         await setDoc(doc(db, "usernames", username), {
             uid: user.uid
         });
