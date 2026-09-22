@@ -1,48 +1,34 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de Bord Admin - AnonBF</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 0.85em;
-            color: #fff;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid rgba(255,255,255,0.15);
-            text-align: left;
-        }
-        th {
-            background: rgba(255,255,255,0.1);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnonBF - Administration</title>
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- SDK Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <div class="glass-container" style="max-width: 900px;">
-        <h1 class="logo">AnonBF Admin</h1>
-        <p class="tagline">Supervision de sécurité des messages</p>
-
-        <div style="overflow-x: auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Expéditeur (Email / UID)</th>
-                        <th>Destinataire</th>
-                        <th>Message</th>
-                    </tr>
-                </thead>
-                <tbody id="admin-table"></tbody>
-            </table>
-        </div>
+  <div class="glass-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h1>🛡️ Panneau Admin - AnonBF</h1>
+      <a href="messages.html" class="btn" style="padding: 8px 15px; font-size: 0.9em;">Mes Messages</a>
     </div>
 
-    <script type="module" src="js/admin.js"></script>
+    <p style="margin-bottom: 20px; opacity: 0.9;">
+      Ce panneau vous permet d'afficher la traçabilité complète de tous les messages envoyés sur la plateforme.
+    </p>
+
+    <!-- Liste des messages reçus par l'admin -->
+    <div id="admin-messages-list">
+      <p>Initialisation...</p>
+    </div>
+  </div>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/admin.js"></script>
 </body>
 </html>
