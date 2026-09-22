@@ -15,17 +15,31 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     try {
-        // Récupérer le nom d'utilisateur
+        // 1. Récupérer le nom d'utilisateur
         const userSnap = await getDoc(doc(db, "users", user.uid));
+        
         if (userSnap.exists()) {
             const username = userSnap.data().username;
-            linkInput.value = `${window.location.origin}/send.html?u=${username}`;
+            
+            // Construction dynamique de l'URL pour éviter l'erreur 404 sur GitHub Pages
+            let baseUrl = window.location.origin + window.location.pathname;
+            
+            // Retirer "messages.html" de la fin de l'URL si présent
+            baseUrl = baseUrl.replace("messages.html", "");
+            
+            // S'assurer qu'il y a un slash à la fin
+            if (!baseUrl.endsWith("/")) {
+                baseUrl += "/";
+            }
+
+            // Générer le lien parfait (ex: https://pseudo.github.io/anonbf/send.html?u=emmanuel)
+            linkInput.value = `${baseUrl}send.html?u=${username}`;
         }
     } catch (err) {
         console.error("Erreur profil :", err);
     }
 
-    // Écoute des messages (simplifiée sans orderBy pour éviter le crash au démarrage)
+    // 2. Écouter les messages reçus en temps réel
     const q = query(
         collection(db, "messages"),
         where("recipientUid", "==", user.uid)
@@ -40,14 +54,16 @@ onAuthStateChanged(auth, async (user) => {
             return;
         }
 
+        // Afficher le nombre de messages
         notifBadge.innerText = snapshot.size;
         notifBadge.style.display = "inline-block";
 
-        // Tri des messages côté JavaScript pour éviter les erreurs d'index Firestore
+        // Trier du plus récent au plus ancien
         const messages = [];
         snapshot.forEach((doc) => messages.push(doc.data()));
         messages.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
+        // Afficher chaque message
         messages.forEach((msg) => {
             const card = document.createElement('div');
             card.className = "message-card";
@@ -59,6 +75,7 @@ onAuthStateChanged(auth, async (user) => {
     });
 });
 
+// Bouton copier le lien
 if (btnCopy) {
     btnCopy.addEventListener('click', () => {
         linkInput.select();
@@ -68,6 +85,7 @@ if (btnCopy) {
     });
 }
 
+// Bouton déconnexion
 if (btnLogout) {
     btnLogout.addEventListener('click', () => signOut(auth));
 }
