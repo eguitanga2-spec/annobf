@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envoyer un message - AnonBF</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glass-container">
+        <h1 class="logo">AnonBF</h1>
+        <p class="tagline">Envoie un message anonyme à <br><span id="target-user">...</span> 💜</p>
+
+        <form id="send-form" class="form">
+            <div class="input-group">
+                <textarea id="message-text" placeholder="Écris ton message anonyme..." rows="4" required></textarea>
+            </div>
+
+            <div id="error-message" class="error-msg"></div>
+
+            <button type="submit" class="btn btn-primary" id="btn-send">Envoyer ➤</button>
+        </form>
+    </div>
+
+    <script type="module" src="js/send.js"></script>
+</body>
+</html>

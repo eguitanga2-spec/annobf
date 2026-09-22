@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer mon lien - AnonBF</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glass-container">
+        <h1 class="logo">AnonBF</h1>
+        <p class="tagline">Créer ton lien unique 🚀</p>
+        <p class="description">Choisis ton pseudo pour recevoir des messages anonymes.</p>
+
+        <form id="register-form" class="form">
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Nom d'utilisateur (ex: emmanuel)" required autocomplete="username">
+            </div>
+            
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Adresse email" required autocomplete="email">
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Mot de passe (6 car. min)" required minlength="6" autocomplete="new-password">
+            </div>
+
+            <div id="error-message" class="error-msg"></div>
+
+            <button type="submit" class="btn btn-primary" id="btn-submit">Créer mon lien</button>
+        </form>
+
+        <div class="footer-link">
+            <a href="login.html" class="link">J'ai déjà un compte</a>
+        </div>
+    </div>
+
+    <script type="module" src="js/register.js"></script>
+</body>
+</html>
