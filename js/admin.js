@@ -1,5 +1,5 @@
 // Adresse email de l'administrateur
-const ADMIN_EMAIL = "admin8@gmail.com"; // <-- REMPLACEZ PAR VOTRE VRAI EMAIL
+const ADMIN_EMAIL = "admin@gmail.com"; // <-- REMPLACEZ PAR VOTRE VRAI EMAIL
 
 // Vérification de la connexion et des droits d'accès
 auth.onAuthStateChanged(async (user) => {
